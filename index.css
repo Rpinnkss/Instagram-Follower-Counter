@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;1,500&display=swap');
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "poppins",sans-serif;
+        }
+        body{
+            height: 100vh;
+            width: 100%;
+            background-color: white;
+        }
+        .background{
+            background: url(https://images2.alphacoders.com/114/1143219.jpg) no-repeat;
+            background-position: center;
+            background-size:cover ;
+            height: 100vh;
+            width: 100%;
+            filter: blur(5px);
+        }
+        .container{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            width: 64%;
+            height: 700px;
+            margin-top: 20px;
+            background: url(https://images2.alphacoders.com/114/1143219.jpg) no-repeat;
+            background-position: center;
+            background-size:cover ;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .item{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 58%;
+            height: 100%;
+            color: #fff;
+            background: transparent;
+            padding: 80px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+        }
+        .bx{
+            color: #fff;
+            font-size: 50px;
+        }
+        .item .logo{
+            color: #fff;
+            font-size: 30px;
+
+        }
+        .text-item h1{
+            font-size: 40px;
+            line-height: 1;
+        }
+        .text-item p{
+            font-size: 16px;
+            margin: 20px 0;
+        }
+        .container .login-section{
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: calc(100% - 58%);
+            height: 100%;
+            margin-right: 100px;
+            color: white;
+        }
+        .login-section .form-box{
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        .login-section .form-box h2{
+            text-align: center;
+            font-size: 25px;
+        }
+        .form-box{
+            position: relative;
+            width: 340px;
+            height: 50px;
+            margin-right: 50px;
+            padding-right: 50px;
+        }
+        form{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 100%;
+            padding: 40px;
+            border-radius: 5px;
+        }
+        h2{
+            font-size: 25px;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+    .btn{
+        background: #fff;
+        width: 10%;
+        height: 20%;
+        margin-right: 20px;
+        margin-bottom: 15px;
+        outline: none;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: #f72d7a;
+        font-size: 16px;
+        color: #fff;
+        box-shadow: rgba(0,0,0,0.4);
+    }
