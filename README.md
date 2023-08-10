@@ -1,1 +1,1 @@
-# JujutsuReccomended
+# JujutsuRecommended
