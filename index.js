@@ -1,43 +1,84 @@
-document.addEventListener("DOMContentLoaded", function() {
+// Import required modules
+const express = require('express');
+const path = require('path');
+const https = require('https');
+const mqttClient = require('./mqtt');
 
-    const unoButton = document.getElementById("unoButton");
-    const dueButton = document.getElementById("dueButton");
-    const treButton = document.getElementById("treButton");
-    const quattroButton = document.getElementById("quattroButton");
+// Create an Express application
+const app = express();
+const port = process.env.PORT || 3000;
 
-    unoButton.addEventListener("click", function(event) {
-        event.preventDefault();
-        window.open("https://images6.alphacoders.com/113/1139591.jpg", "_blank");
+// Serve static files (CSS, images, etc.) from a public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Define the Instagram username to fetch follower count for
+const username = "iismarconicivitavecchia";
+
+// Define the request options
+const options = {
+  hostname: 'i.instagram.com',
+  path: `/api/v1/users/web_profile_info/?username=${username}`,
+  method: 'GET',
+  headers: {
+    'User-Agent': 'Instagram 76.0.0.15.395 Android (24/7.0; 640dpi; 1440x2560; samsung; SM-G930F; herolte; samsungexynos8890; en_US; 138226743)'
+  }
+};
+
+// Initialize variables to store the follower count and the old follower count
+let oldFollowerCount = 0;
+let output;
+
+// Function to fetch the follower count
+function fetchFollowerCount() {
+  const req = https.get(options, (res) => {
+    let data = '';
+
+    res.on('data', (chunk) => {
+      data += chunk;
     });
-    dueButton.addEventListener("click", function(event) {
-        event.preventDefault();
-        window.open("https://giffiles.alphacoders.com/211/211786.gif", "_blank");
+
+    res.on('end', () => {
+      try {
+        const jsonData = JSON.parse(data);
+        if (jsonData.data.user) {
+          // Extract the follower count from the JSON response
+          const followerCount = jsonData.data.user.edge_followed_by.count;
+
+          if (followerCount !== oldFollowerCount) {
+            // Update the old follower count and store the new count as a string
+            oldFollowerCount = followerCount;
+            output = String(followerCount);
+
+            // Publish the follower count via MQTT
+            mqttClient.publishMessage(output);
+          } else {
+            console.log("Follower number hasn't changed");
+          }
+        } else {
+          console.log("No user found.");
+        }
+      } catch (error) {
+        console.error("JSON data parsing error: " + error);
+      }
     });
-    treButton.addEventListener("click", function(event) {
-        event.preventDefault();
-        window.open("https://images4.alphacoders.com/126/1264954.jpg", "_blank");
-    });
-    quattroButton.addEventListener("click", function(event) {
-        event.preventDefault();
-        window.open("https://images8.alphacoders.com/128/1284988.jpg", "_blank");
-    });
+  });
+
+  req.on('error', (error) => {
+    console.error(error);
+  });
+
+  req.end();
+}
+
+// Call fetchFollowerCount every 10 seconds
+setInterval(fetchFollowerCount, 10000);
+
+// Define a route to send the follower count to the front end
+app.get('/getFollowerCount', (req, res) => {
+  res.json({ followerCount: output || 'Loading...' });
 });
-var message = "NON CI PROVARE COGLIONE!";
-var message2 = "TI SPACCO LA FACCIA ANIMALE!";
-var message3 = "SIII VABBE TI PIACEREBBE!";
 
-function rtclickcheck(keyp){ if (navigator.appName == "Netscape" && keyp.which == 3){ alert(message); return false; }
-
-if (navigator.appVersion.indexOf("MSIE") != -1 && event.button == 2) { alert(message); return false; } }
-
-document.onmousedown = rtclickcheck;
-document.addEventListener("keydown", function (event){
-if (event.ctrlKey){
-    event.preventDefault();
-    alert(message3);
-}
-if(event.keyCode == 123){
-    event.preventDefault();
-    alert(message2);
-}
+// Start the Express server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
